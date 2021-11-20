@@ -1,17 +1,17 @@
-import {useState} from 'react';
-import axios from 'axios';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Main from "./pages/Main";
+import MyPage from "./pages/MyPage";
+import Rent from "./pages/Rent";
 
-const url = '/api';
+export default function App() {
 
-function App() {
-  const [word, setWord] = useState();
-  axios(url).then(res=>setWord(res.data))
   return (
-    <div>
-      <h2>Hello</h2>
-      <h2>{word}</h2>
-    </div>
+      <BrowserRouter>
+          <Routes>
+            <Route exact path="/" element={<Main />} />
+            <Route exact path="/rent" element={<Rent />} />
+            <Route exact path="/mypage" element={<MyPage />} />
+          </Routes>
+      </BrowserRouter>
   );
 }
-
-export default App;
