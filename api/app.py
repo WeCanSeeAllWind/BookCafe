@@ -1,9 +1,15 @@
 from flask import Flask
 from flask_cors import CORS
 from blueprints.book import book
+from blueprints.user import user
+from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 app.register_blueprint(book)
+app.register_blueprint(user)
+app.config['SECRET_KEY'] = 'I am your father'
+app.config['BCRYPT_LEVEL'] = 10
+bcrypt = Bcrypt(app)
 CORS(app)
 
 @app.route('/api', methods=['GET'])

@@ -7,5 +7,12 @@ dbCon = DBController()
 
 @book.route('/list')
 def list():
-  book_list = dbCon.selectAll('BOOKS_TB', ['book_id', 'book_name'])
-  return jsonify(book_list)
+    book_list = dbCon.select('BOOKS_TB', ['book_id', 'book_name'])
+    return jsonify(book_list)
+
+@book.route('/rent', methods=['POST'])
+def rent():
+    params = request.get_json()
+    rent_list = params['rentList']
+    dbCon.insertRent(rent_list)
+    return jsonify({"status": 200, "result": "success"})
