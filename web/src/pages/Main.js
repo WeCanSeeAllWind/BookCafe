@@ -26,6 +26,14 @@ function Main() {
       alert('로그인 후 사용할 수 있는 서비스입니다.');
     }
   };
+  const handleReturn = (e)=>{
+    e.preventDefault();
+    if (isLogin) {
+      navigate('/return');
+    } else {
+      alert('로그인 후 사용할 수 있는 서비스입니다.');
+    }
+  };  
   const handleMypage = (e)=>{
     e.preventDefault();
     if (isLogin) {
@@ -53,6 +61,7 @@ function Main() {
     <div>
       <div>
         <button onClick={handleRental}>대여하기</button>
+        <button onClick={handleReturn}>반납하기</button>
         <button onClick={handleMypage}>MyPage</button>
         {isLogin ? <button onClick={handleLogout}>Logout</button> : <button onClick={handleLogin}>Login</button>}
         {isLogin || <button onClick={handleRegister}>Register</button>}

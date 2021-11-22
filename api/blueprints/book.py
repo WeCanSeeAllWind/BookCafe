@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, Blueprint, request
+from flask import Flask, jsonify, Blueprint, request, session
 from db.db import DBController
 
 book = Blueprint('book', __name__, url_prefix='/api/book')
@@ -7,12 +7,31 @@ dbCon = DBController()
 
 @book.route('/list')
 def list():
-    book_list = dbCon.select('BOOKS_TB', ['book_id', 'book_name'])
+    book_list = dbCon.selectBooks()
     return jsonify(book_list)
 
 @book.route('/rent', methods=['POST'])
 def rent():
     params = request.get_json()
     rent_list = params['rentList']
-    dbCon.insertRent(rent_list)
+    session_id = params['sessionId']
+    user_email = session[session_id]
+    dbCon.insertRent(rent_list, user_email)
+    return jsonify({"status": 200, "result": "success"})
+
+@book.route('/myBooks', methods=['POST'])
+def myBooks():
+    params = request.get_json()
+    session_id = params['sessionId']
+    user_email = session[session_id]
+    myBooks = dbCon.selectMyBooks(user_email)
+    return jsonify(myBooks)
+
+@book.route('/return', methods=['POST'])
+def returnBooks():
+    params = request.get_json()
+    return_list = params['returnList']
+    session_id = params['sessionId']
+    user_email = session[session_id]
+    dbCon.insertReturn(return_list, user_email)
     return jsonify({"status": 200, "result": "success"})

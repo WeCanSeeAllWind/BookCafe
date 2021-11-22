@@ -4,6 +4,7 @@ import MyPage from "./pages/MyPage";
 import Rent from "./pages/Rent";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import Return from "./pages/Return";
 import {Context, reducer, initialState} from './reducers';
 import { useReducer } from "react";
 
@@ -17,6 +18,7 @@ export default function App() {
             <Route exact path="/register" element={<Register />} />
             <Route exact path="/login" element={<Login />} />
             <Route exact path="/rent" element={<Rent />} />
+            <Route exact path="/return" element={<Return />} />
             <Route exact path="/mypage" element={<MyPage />} />
           </Routes>
       </BrowserRouter>
