@@ -9,6 +9,7 @@ function Rent() {
   const [bucket, setBucket] = useState({});
   const [count, setCount] = useState([0]);
   const [init, setInit] = useState(0);
+  const [starCheck, setStarCheck] = useState({});
   const [state, ] = useContext(Context)
   const handleAdd = (e)=>{
     e.preventDefault();
@@ -72,6 +73,15 @@ function Rent() {
   }
   useEffect(()=>{
     axios('/api/book/list').then(res=>{
+      const newStarCheck = {}
+      res.data.forEach(book=>{
+        newStarCheck[book[0]] = [false, false, false, false, false]
+        const starScore = book[6] || 0
+        for (let i=0; i < starScore; i++) {
+          newStarCheck[book[0]][i] = true;
+        }
+      })
+      setStarCheck(newStarCheck)
       setBooks(res.data)
       setCount(cur=>{
         const newCount = [...cur]
@@ -103,6 +113,13 @@ function Rent() {
           <li key={book[1]}>
             <h3>{book[1]}</h3>
             <img src={'/images/books/'+book[0]+'.jpg'} alt={book[1]} width="100px"/>
+            <div>
+              {starCheck[book[0]][0] ? <img src={'/images/icons/star_fill.png'} alt="star_fill"/> : <img src={'/images/icons/star_empty.png'} alt="star_empty"/>}
+              {starCheck[book[0]][1] ? <img src={'/images/icons/star_fill.png'} alt="star_fill"/> : <img src={'/images/icons/star_empty.png'} alt="star_empty"/>}
+              {starCheck[book[0]][2] ? <img src={'/images/icons/star_fill.png'} alt="star_fill"/> : <img src={'/images/icons/star_empty.png'} alt="star_empty"/>}
+              {starCheck[book[0]][3] ? <img src={'/images/icons/star_fill.png'} alt="star_fill"/> : <img src={'/images/icons/star_empty.png'} alt="star_empty"/>}
+              {starCheck[book[0]][4] ? <img src={'/images/icons/star_fill.png'} alt="star_fill"/> : <img src={'/images/icons/star_empty.png'} alt="star_empty"/>}
+            </div>
             <p>대여가능 권수: {book[5] || 5}</p>
             <button title={book[1]} name={book[0]} value={book[5]} onClick={handleAdd}>추가</button>
           </li>

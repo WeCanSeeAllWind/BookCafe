@@ -22,9 +22,10 @@ def rent():
 @book.route('/myBooks', methods=['POST'])
 def myBooks():
     params = request.get_json()
+    isRead = params['isRead']
     session_id = params['sessionId']
     user_email = session[session_id]
-    myBooks = dbCon.selectMyBooks(user_email)
+    myBooks = dbCon.selectMyBooks(user_email, isRead)
     return jsonify(myBooks)
 
 @book.route('/return', methods=['POST'])
@@ -35,3 +36,10 @@ def returnBooks():
     user_email = session[session_id]
     dbCon.insertReturn(return_list, user_email)
     return jsonify({"status": 200, "result": "success"})
+
+@book.route('/detail', methods=['POST'])
+def detail():
+    params = request.get_json()
+    book_id = params['bookId']
+    bookDetail = dbCon.selectBookDetail(book_id)
+    return jsonify(bookDetail)

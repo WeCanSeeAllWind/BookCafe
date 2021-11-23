@@ -6,7 +6,7 @@ class DBController():
     def __init__(self):
         self.con = sqlite3.connect('./db/database.db', check_same_thread=False)
         self.cur = self.con.cursor()
-
+    #User 처리 --------------
     def selectUser(self, email):
         self.cur.execute(f"SELECT user_password FROM USERS_TB WHERE user_email = '{email}';")
         return self.cur.fetchone()
@@ -15,13 +15,18 @@ class DBController():
         name, email, password = userInfo
         self.cur.execute("INSERT INTO USERS_TB (user_name, user_email, user_password) VALUES (?, ?, ?);", (name, email, password))
         self.con.commit()
-
+    #Book 처리 --------------
     def selectBooks(self):
-        self.cur.execute("SELECT * FROM RENTAL_BOOKS_VW")
+        self.cur.execute("SELECT * FROM BOOKS_RENTAL_REVIEW_VW;")
         return self.cur.fetchall()
     
-    def selectMyBooks(self, user_email):
-        self.cur.execute(f"SELECT R.rent_book_id, B.book_name, count(R.rent_book_id) FROM RENTAL_TB as R LEFT JOIN BOOKS_TB as B on R.rent_book_id = B.book_id WHERE R.rent_user_email = '{user_email}' and R.rent_to_date is NULL GROUP BY R.rent_book_id;")
+    def selectBookDetail(self, book_id):
+        self.cur.execute(f"SELECT * FROM BOOKS_TB WHERE book_id = '{book_id}';")
+        return self.cur.fetchone()
+    
+    def selectMyBooks(self, user_email, isRead):
+        isNull = 'is not NULL' if isRead else 'is NULL'
+        self.cur.execute(f"SELECT R.rent_book_id, B.book_name, count(R.rent_book_id) FROM RENTAL_TB as R LEFT JOIN BOOKS_TB as B on R.rent_book_id = B.book_id WHERE R.rent_user_email = '{user_email}' and R.rent_to_date {isNull} GROUP BY R.rent_book_id;")
         return self.cur.fetchall()
     
     def insertRent(self, rent_list, user_email):
@@ -40,3 +45,15 @@ class DBController():
             return_count = book[3]
             self.cur.execute(f"UPDATE RENTAL_TB SET rent_to_date = '{nowDateTime}' WHERE rent_book_id = {book_id} and rent_user_email = '{user_email}' and rent_to_date is NULL LIMIT {return_count}")
         self.con.commit()
+    #Review 처리 --------------
+    def insertReview(self, book_id, star_score, review_text, user_email):
+        self.cur.execute(f"SELECT * FROM REVIEW_TB WHERE review_book_id='{book_id}' and review_user_email = '{user_email}';")
+        isExist = self.cur.fetchall()
+        if isExist:
+            self.cur.execute(f"UPDATE REVIEW_TB SET review_score = '{star_score}', review_content = '{review_text}' WHERE review_book_id='{book_id}' and review_user_email = '{user_email}';")
+            self.con.commit()
+            return False
+        else: 
+            self.cur.execute(f"INSERT INTO REVIEW_TB (review_book_id, review_user_email, review_score, review_content) VALUES ('{book_id}', '{user_email}', '{star_score}', '{review_text}');")
+            self.con.commit()
+            return True

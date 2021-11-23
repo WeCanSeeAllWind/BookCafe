@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, {useEffect, useContext, useState} from 'react';
 import { Context } from '../reducers';
+import {useNavigate} from 'react-router-dom';
 
 
 function Return() {
@@ -9,6 +10,7 @@ function Return() {
   const [count, setCount] = useState({})
   const [init, setInit] = useState(0)
   const [{sessionId}, ] = useContext(Context)
+  const navigate = useNavigate()
   console.log(bucket)
   const handleAdd = (e)=>{
     e.preventDefault();
@@ -65,7 +67,7 @@ function Return() {
     }).catch(console.log)
   };
   useEffect(() => {
-    axios.post('/api/book/myBooks', {sessionId}).then(res=>{
+    axios.post('/api/book/myBooks', {sessionId, isRead: false}).then(res=>{
       setMyBooks(res.data)
       setCount(cur=>{
         const newCount = {...cur};
@@ -79,7 +81,7 @@ function Return() {
   return (
     <div>
       <ol>
-        <h1>반납할 책 목록</h1>
+        <h1 onClick={()=>{navigate('/')}}>반납할 책 목록</h1>
         {Object.values(bucket).map(book=>(
           <li key={book[0]+book[1]}>
             <p>{book[1]}</p>
