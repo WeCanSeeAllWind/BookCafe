@@ -2,6 +2,8 @@ import React, {useContext, useRef} from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {Context} from '../reducers';
+import Nav from '../components/Nav';
+import styled from 'styled-components';
 
 function Login() {
   const [, dispatch] = useContext(Context);
@@ -29,11 +31,71 @@ function Login() {
   }
   return (
     <div>
-        <label htmlFor="email">email<input type="email" ref={email} /></label>
-        <label htmlFor="password">password<input type="password" ref={password}/></label>
-        <button onClick={handleSubmit}>Login</button>
+        <Nav/>
+        <ContentWrapper>
+          <FormWapper>
+            <StyledImg src="/images/icons/elice.png" alt="elice"/>
+            <StyledLabel htmlFor="email">
+              <StyledInput type="email" ref={email} placeholder="Input your email"/>
+            </StyledLabel>
+            <StyledLabel htmlFor="password">
+              <StyledInput type="password" ref={password} placeholder="Input your password"/>
+            </StyledLabel>
+            <StyledButton onClick={handleSubmit}>Login</StyledButton>
+          </FormWapper>
+        </ContentWrapper>
     </div>
   )
 }
 
 export default Login
+
+const ContentWrapper = styled.div`
+  display: flex;
+  height: 98vh;
+  background-color: #dadaf9;
+`;
+const FormWapper = styled.div`
+  position: relative;
+  margin: auto;
+  width: 400px;
+  height: 500px;
+  border: 2px solid #dadaf9;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  padding-top: 150px;
+  background-color: #ededfe;
+  box-sizing: border-box;
+`;
+const StyledLabel = styled.label`
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 40px;
+  background-color: white;
+  border-radius: 10px;
+`;
+const StyledButton = styled.button`
+  margin: auto;
+  border-radius: 10px;
+  width: 250px;
+  height: 50px;
+  background-color: #514fa1;
+  color: #d1d1ef;
+  font-size: 15px;
+  font-weight: bold;
+`;
+const StyledInput = styled.input`
+  border-radius: 10px;
+  width: 250px;
+  height: 50px;
+  text-align: center;
+`;
+
+const StyledImg = styled.img`
+  position: absolute;
+  top: 50px;
+  left: 100px;
+  width: 200px;
+  height: 48px;
+`;

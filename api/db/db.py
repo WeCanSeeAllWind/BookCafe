@@ -26,7 +26,7 @@ class DBController():
     
     def selectMyBooks(self, user_email, isRead):
         isNull = 'is not NULL' if isRead else 'is NULL'
-        self.cur.execute(f"SELECT R.rent_book_id, B.book_name, count(R.rent_book_id) FROM RENTAL_TB as R LEFT JOIN BOOKS_TB as B on R.rent_book_id = B.book_id WHERE R.rent_user_email = '{user_email}' and R.rent_to_date {isNull} GROUP BY R.rent_book_id;")
+        self.cur.execute(f"SELECT R.rent_book_id, B.book_name, B.book_author, count(R.rent_book_id), B.review_avg_score FROM RENTAL_TB as R LEFT JOIN BOOKS_RENTAL_REVIEW_VW as B on R.rent_book_id = B.book_id WHERE R.rent_user_email = '{user_email}' and R.rent_to_date {isNull} GROUP BY R.rent_book_id;")
         return self.cur.fetchall()
     
     def insertRent(self, rent_list, user_email):
@@ -42,7 +42,7 @@ class DBController():
         nowDateTime = now.strftime('%Y-%m-%d %H:%M:%S')
         for book in return_list:
             book_id = book[0]
-            return_count = book[3]
+            return_count = book[4]
             self.cur.execute(f"UPDATE RENTAL_TB SET rent_to_date = '{nowDateTime}' WHERE rent_book_id = {book_id} and rent_user_email = '{user_email}' and rent_to_date is NULL LIMIT {return_count}")
         self.con.commit()
     #Review 처리 --------------

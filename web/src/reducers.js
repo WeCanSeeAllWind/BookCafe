@@ -3,7 +3,8 @@ import { createContext } from "react";
 export const Context = createContext();
 
 export const initialState = {
-  sessionId: "elice"
+  sessionId: "elice",
+  isLogin: false
 }
 
 export const reducer = (state, action) => {
@@ -13,6 +14,11 @@ export const reducer = (state, action) => {
         ...state,
         sessionId: action.payload
       }}
+    case 'isLogin':{
+      return {
+        ...state,
+        isLogin: action.payload
+      }}  
     default:
       return state;
   }

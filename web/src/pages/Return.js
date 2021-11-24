@@ -1,7 +1,10 @@
 import axios from 'axios';
 import React, {useEffect, useContext, useState} from 'react';
 import { Context } from '../reducers';
-import {useNavigate} from 'react-router-dom';
+import Nav from '../components/Nav';
+import styled from 'styled-components';
+import Book from '../components/Book';
+import Detail from '../components/Detail';
 
 
 function Return() {
@@ -9,28 +12,36 @@ function Return() {
   const [bucket, setBucket] = useState({})
   const [count, setCount] = useState({})
   const [init, setInit] = useState(0)
+  const [starCheck, setStarCheck] = useState({});
   const [{sessionId}, ] = useContext(Context)
-  const navigate = useNavigate()
-  console.log(bucket)
+  const [isDetail, setIsDetail] = useState(false);
   const handleAdd = (e)=>{
     e.preventDefault();
-    const [bookId, bookName, bookCount] = e.target.value.split(',');
+    const [bookId, bookName, bookAuthor, bookCount] = e.target.value.split(',');
     setBucket(cur=>{
       const newBucket = {...cur};
-      newBucket[bookId] = [bookId, bookName, bookCount, 1]
+      newBucket[bookId] = [bookId, bookName, bookAuthor, bookCount, 1]
       return newBucket
     })
   };
+  const handleImg = (e)=>{
+    e.preventDefault();
+    setIsDetail(e.target.alt);
+  }
+  const handleDetail = (e)=>{
+    e.preventDefault();
+    setIsDetail(false);
+  }
   const handlePlus = (e)=>{
     e.preventDefault();
-    const [bookId, , bookCount, ] = e.target.value.split(',');
+    const [bookId, , ,bookCount, ] = e.target.value.split(',');
     if (count[bookId] < bookCount) {
       setCount(cur=>{
         const newCount = {...cur};
         newCount[bookId] += 1
         setBucket(cur=>{
           const newBucket = {...cur};
-          newBucket[bookId][3] = newCount[bookId];
+          newBucket[bookId][4] = newCount[bookId];
           return newBucket
         })
         return newCount
@@ -61,14 +72,25 @@ function Return() {
     e.preventDefault();
     axios.post('/api/book/return', {sessionId, returnList: Object.values(bucket)}).then(res=>{
       if (res.data.result === "success") {
+        console.log(res.data)
         setBucket({});
+        setMyBooks([])
         setInit(cur=>cur+1);
       } else {console.log(res.data)}
     }).catch(console.log)
   };
   useEffect(() => {
     axios.post('/api/book/myBooks', {sessionId, isRead: false}).then(res=>{
-      setMyBooks(res.data)
+      const newStarCheck = {}
+      res.data.forEach(book=>{
+        console.log(book)
+        newStarCheck[book[0]] = [false, false, false, false, false]
+        const starScore = book[4] || 0
+        for (let i=0; i < starScore; i++) {
+          newStarCheck[book[0]][i] = true;
+        }
+      })
+      setStarCheck(newStarCheck);
       setCount(cur=>{
         const newCount = {...cur};
         res.data.forEach(book=>{
@@ -76,37 +98,100 @@ function Return() {
         })
         return newCount
       })
+      setMyBooks(res.data);
     })
   }, [init])
-  return (
-    <div>
-      <ol>
-        <h1 onClick={()=>{navigate('/')}}>반납할 책 목록</h1>
-        {Object.values(bucket).map(book=>(
-          <li key={book[0]+book[1]}>
-            <p>{book[1]}</p>
-            <img src={'/images/books/'+book[0]+'.jpg'} alt={book[1]} width="100px"/>
-            <p>빌린수량: {book[2]}</p>
-            <p>반납할 수량: {book[3]}</p>
-            <button value={book} onClick={handlePlus}>+</button>
-            <button value={book} onClick={handleMinus}>-</button>
-          </li>
-        ))}
-        <button onClick={handleReturn}>반납하기</button>
-      </ol>
-      <ol>
-        <h1>내가 빌린 책 목록</h1>
-        {myBooks.map(book=>(
-          <li key={book[0]}>
-            <p>{book[1]}</p>
-            <img src={'/images/books/'+book[0]+'.jpg'} alt={book[1]} width="100px"/>
-            <p>빌린수량: {book[2]}</p>
-            <button value={book} onClick={handleAdd}>반납 목록에 추가</button>
-          </li>
-        ))}
-      </ol>
-    </div>
-  )
-};
+return (
+  <StyledDiv>
+    <Nav/>
+    {isDetail && <Detail bookId={isDetail} onClick={handleDetail}/>}
+    <StyledContainer>
+      <StyledTwins>
+        <h2>내가 빌린 책 목 록</h2>
+        <StyledHr/>
+        <BookList>
+          {myBooks.map(book=><Book book={book} starCheck={starCheck} handleImg={handleImg} isRented={true} handleAdd={handleAdd}/>)}
+        </BookList>
+      </StyledTwins>
+      <StyledTwins>
+        <h2>대 여 희 망</h2>
+        <StyledHr/>
+        <WishList>
+          {Object.values(bucket).map(book=>(
+            <Book book={book} starCheck={starCheck} handleImg={handleImg} isReturn={true} handlePlus={handlePlus} handleMinus={handleMinus} count={count}/>
+          ))}
+        </WishList>
+        <StyledButton onClick={handleReturn}>반납하기</StyledButton>
+      </StyledTwins>
+    </StyledContainer>
+  </StyledDiv>
+)
+}
 
 export default Return
+
+const StyledDiv = styled.div`
+height: 100vh;
+display: grid;
+grid-template-rows: max-content;
+`;
+
+const StyledContainer = styled.div`
+max-height: max-content;
+display: grid;
+grid-template-columns: 3fr 1fr;
+grid-gap: 15px;
+background-color: #dadaf9;
+padding: 15px;
+overflow: auto;
+`;
+
+const StyledTwins = styled.div`
+max-height: max-content;
+overflow: hidden;
+position: relative;
+background-color: #ededfe;
+border-radius: 15px;
+padding: 10px;
+text-align: center;
+`;
+
+const StyledHr = styled.hr`
+border-color: #dadaf9;
+`;
+
+const StyledButton = styled.button`
+position: absolute;
+bottom: 20px;
+right: 50%;
+/* margin: auto; */
+border-radius: 10px;
+width: 250px;
+height: 50px;
+background-color: #514fa1;
+color: #d1d1ef;
+font-size: 15px;
+font-weight: bold;
+transform: translate(50%);
+`;
+
+const BookList = styled.div`
+max-height: 84%;
+overflow: auto;
+display: grid;
+padding: 30px;
+grid-template-columns: 1fr 1fr 1fr;
+grid-template-rows: 1fr 1fr;
+grid-gap: 30px;
+overflow: auto;
+`;
+
+const WishList = styled.div`
+max-height: 84%;
+overflow: auto;
+display: grid;
+grid-template-columns: 1fr;
+grid-gap: 30px;
+padding: 30px;
+overflow: auto;
+`;

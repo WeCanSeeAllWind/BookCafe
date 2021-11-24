@@ -1,20 +1,24 @@
 import axios from 'axios';
 import React, { useEffect, useState, useContext } from 'react';
 import { Context } from '../reducers';
-import {useNavigate} from 'react-router-dom';
+import Nav from '../components/Nav';
+import Book from '../components/Book';
+import Detail from '../components/Detail';
+import styled from 'styled-components';
 
 function Rent() {
-  const navigate = useNavigate();
   const [books, setBooks] = useState([]);
   const [bucket, setBucket] = useState({});
   const [count, setCount] = useState([0]);
   const [init, setInit] = useState(0);
   const [starCheck, setStarCheck] = useState({});
+  const [isDetail, setIsDetail] = useState(false);
   const [state, ] = useContext(Context)
   const handleAdd = (e)=>{
     e.preventDefault();
+    const [id, name, author, countTotal, countRent, countCurrent, review_avg] = e.target.value.split(',')
     setBucket(cur=>{
-      const newBucket = {...cur, [e.target.name]: [e.target.name, e.target.title, e.target.value, 1]};
+      const newBucket = {...cur, [id]: [id, name, author, 1, countCurrent]};
       return newBucket
     })
     console.log(bucket);
@@ -67,9 +71,13 @@ function Rent() {
       }
     }).catch(console.log);
   }
-  const handleTemp = (e)=>{
+  const handleImg = (e)=>{
     e.preventDefault();
-    navigate('/');
+    setIsDetail(e.target.alt);
+  }
+  const handleDetail = (e)=>{
+    e.preventDefault();
+    setIsDetail(false);
   }
   useEffect(()=>{
     axios('/api/book/list').then(res=>{
@@ -93,40 +101,96 @@ function Rent() {
     });
   }, [init])
   return (
-    <div>
-      <ol>
-        <h2 onClick={handleTemp}>대여희망목록</h2>
-        {Object.values(bucket).map(book=>(
-          <li key={book[0]+book[1]}>
-            <h3>{book[1]}</h3>
-            <img src={'/images/books/'+book[0]+'.jpg'} alt={book[1]} width="100px"/>
-            <p>대여가능 권수: {book[2] || 5}</p>
-            <p>대여희망 권수: {count[book[0]]}</p>
-            <button name={book[0]} value={book[2]} onClick={handleMinus}>-</button>
-            <button name={book[0]} value={book[2]} onClick={handlePlus}>+</button></li>
-        ))}
-        <button onClick={handleRent}>대여신청</button>
-      </ol>
-      <ol>
-        <h2>도서목록</h2>
-        {books.map(book=>(
-          <li key={book[1]}>
-            <h3>{book[1]}</h3>
-            <img src={'/images/books/'+book[0]+'.jpg'} alt={book[1]} width="100px"/>
-            <div>
-              {starCheck[book[0]][0] ? <img src={'/images/icons/star_fill.png'} alt="star_fill"/> : <img src={'/images/icons/star_empty.png'} alt="star_empty"/>}
-              {starCheck[book[0]][1] ? <img src={'/images/icons/star_fill.png'} alt="star_fill"/> : <img src={'/images/icons/star_empty.png'} alt="star_empty"/>}
-              {starCheck[book[0]][2] ? <img src={'/images/icons/star_fill.png'} alt="star_fill"/> : <img src={'/images/icons/star_empty.png'} alt="star_empty"/>}
-              {starCheck[book[0]][3] ? <img src={'/images/icons/star_fill.png'} alt="star_fill"/> : <img src={'/images/icons/star_empty.png'} alt="star_empty"/>}
-              {starCheck[book[0]][4] ? <img src={'/images/icons/star_fill.png'} alt="star_fill"/> : <img src={'/images/icons/star_empty.png'} alt="star_empty"/>}
-            </div>
-            <p>대여가능 권수: {book[5] || 5}</p>
-            <button title={book[1]} name={book[0]} value={book[5]} onClick={handleAdd}>추가</button>
-          </li>
-        ))}
-      </ol>
-    </div>
+    <StyledDiv>
+      <Nav/>
+      {isDetail && <Detail bookId={isDetail} onClick={handleDetail}/>}
+      <StyledContainer>
+        <StyledTwins>
+          <h2>도 서 목 록</h2>
+          <StyledHr/>
+          <BookList>
+            {books.map(book=><Book book={book} starCheck={starCheck} handleImg={handleImg} isRent={true} handleAdd={handleAdd}/>)}
+          </BookList>
+        </StyledTwins>
+        <StyledTwins>
+          <h2>대 여 희 망</h2>
+          <StyledHr/>
+          <WishList>
+            {Object.values(bucket).map(book=>(
+              <Book book={book} starCheck={starCheck} handleImg={handleImg} isWish={true} handlePlus={handlePlus} handleMinus={handleMinus} count={count}/>
+            ))}
+          </WishList>
+          <StyledButton onClick={handleRent}>대여신청</StyledButton>
+        </StyledTwins>
+      </StyledContainer>
+    </StyledDiv>
   )
 }
 
 export default Rent
+
+const StyledDiv = styled.div`
+  height: 100vh;
+  display: grid;
+  grid-template-rows: max-content;
+`;
+
+const StyledContainer = styled.div`
+  max-height: max-content;
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  grid-gap: 15px;
+  background-color: #dadaf9;
+  padding: 15px;
+  overflow: auto;
+`;
+
+const StyledTwins = styled.div`
+  max-height: max-content;
+  overflow: hidden;
+  position: relative;
+  background-color: #ededfe;
+  border-radius: 15px;
+  padding: 10px;
+  text-align: center;
+`;
+
+const StyledHr = styled.hr`
+  border-color: #dadaf9;
+`;
+
+const StyledButton = styled.button`
+  position: absolute;
+  bottom: 20px;
+  right: 50%;
+  /* margin: auto; */
+  border-radius: 10px;
+  width: 250px;
+  height: 50px;
+  background-color: #514fa1;
+  color: #d1d1ef;
+  font-size: 15px;
+  font-weight: bold;
+  transform: translate(50%);
+`;
+
+const BookList = styled.div`
+  max-height: 84%;
+  overflow: auto;
+  display: grid;
+  padding: 30px;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-gap: 30px;
+  overflow: auto;
+`;
+
+const WishList = styled.div`
+  max-height: 84%;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 30px;
+  padding: 30px;
+  overflow: auto;
+`;

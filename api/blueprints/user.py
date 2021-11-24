@@ -48,7 +48,7 @@ def isLogin():
 @user.route('/logout', methods=['POST'])
 def logout():
     params = request.get_json()
-    session_id = params['session_id']
+    session_id = params['sessionId']
     if session.get(session_id):
         session.pop(session_id)
         value = {"status": 200, "result": "success"}
