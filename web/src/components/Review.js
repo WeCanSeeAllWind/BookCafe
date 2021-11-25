@@ -1,6 +1,5 @@
 import axios from 'axios';
-import React, {useState, useRef, useContext} from 'react';
-import { Context } from '../reducers';
+import React, {useState, useRef} from 'react';
 import Nav from './Nav';
 import styled from 'styled-components';
 
@@ -8,7 +7,6 @@ function Review({book, onClick}) {
   const [isFilled, setIsFilled] = useState([0, false, false, false, false, false]);
   const [starScore, setStarScore] = useState(0);
   const reviewText = useRef();
-  const [{sessionId}, ] = useContext(Context);
   const [bookId, bookName] = book;
   const handleStar = (e)=>{
     e.preventDefault();
@@ -19,7 +17,7 @@ function Review({book, onClick}) {
   }
   const handleSubmit = (e)=>{
     e.preventDefault();
-    axios.post('/api/review/new', {sessionId, bookId, starScore, reviewText: reviewText.current.value}).then(res=>{
+    axios.post('/api/review/new', {bookId, starScore, reviewText: reviewText.current.value}).then(res=>{
       if (res.data.result === "change") {
         alert("리뷰는 1권당 하나씩만 작성이 가능합니다. 새로 작성하신 리뷰로 변경했습니다.")
       }

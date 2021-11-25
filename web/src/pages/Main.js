@@ -7,7 +7,7 @@ import Book from '../components/Book';
 import styled from 'styled-components';
 
 function Main() {
-  const [{sessionId}, dispatch] = useContext(Context);
+  const [, dispatch] = useContext(Context);
   const [books, setBooks] = useState([]);
   const [isDetail, setIsDetail] = useState(false);
   const [starCheck, setStarCheck] = useState({});
@@ -23,10 +23,13 @@ function Main() {
       })
       setStarCheck(newStarCheck)
       setBooks(res.data);
-      axios.post('/api/user/isLogin', {"session_id": sessionId}).then(res=>{
+      axios('/api/user/isLogin').then(res=>{
         if (res.data.result === "success"){
           dispatch({type:"isLogin", payload: true})
-        } else {console.log(res.data)}
+        } else {
+          console.log(res.data)
+          dispatch({type:"isLogin", payload: false})
+        }
       }).catch(console.log)
     });
   }, []);

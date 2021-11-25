@@ -17,8 +17,6 @@ function Login() {
       password: password.current.value
     }).then(res=>{
       if (res.data.result === 'success'){
-        console.log(res.data['session_id'])
-        dispatch({type: "session", payload: res.data['session_id']})
         navigate('/');
       } else if (res.data.result === 'not exist'){
         console.log(res.data);

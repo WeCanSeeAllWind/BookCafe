@@ -1,6 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState, useContext } from 'react';
-import { Context } from '../reducers';
+import React, { useEffect, useState } from 'react';
 import Nav from '../components/Nav';
 import Book from '../components/Book';
 import Detail from '../components/Detail';
@@ -13,7 +12,6 @@ function Rent() {
   const [init, setInit] = useState(0);
   const [starCheck, setStarCheck] = useState({});
   const [isDetail, setIsDetail] = useState(false);
-  const [state, ] = useContext(Context)
   const handleAdd = (e)=>{
     e.preventDefault();
     const [id, name, author, countTotal, countRent, countCurrent, review_avg] = e.target.value.split(',')
@@ -62,7 +60,7 @@ function Rent() {
   }
   const handleRent = (e)=>{
     e.preventDefault();
-    axios.post('/api/book/rent', {rentList: Object.values(bucket), sessionId: state.sessionId}).then(res=>{
+    axios.post('/api/book/rent', {rentList: Object.values(bucket)}).then(res=>{
       if (res.data.result === 'success') {
         setBucket({});
         setInit(cur=>cur+1)

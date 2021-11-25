@@ -30,27 +30,23 @@ def login():
     elif check_password_hash(true_pw[0], password) is False:
         value = {"status": 404, "result": "not match"}
     else:
-        session_id = "".join(random.choice(string.ascii_letters) for i in range(10))
-        session[session_id] = email
-        value = {"status": 200, "result": "success", "session_id": session_id}
+        session['useremail'] = email
+        value = {"status": 200, "result": "success"}
     return jsonify(value)
 
-@user.route('/isLogin', methods=['POST'])
+@user.route('/isLogin', methods=['GET'])
 def isLogin():
-    params = request.get_json()
-    session_id = params['session_id']
-    if session.get(session_id):
-        value = {"status": 200, "result": "success"}
+    if session.get('useremail'):
+        email = session['useremail']
+        value = {"status": 200, "result": "success", "payload": email, "session": session}
     else:
         value = {"status": 404, "result": "fail"}
     return jsonify(value)
 
-@user.route('/logout', methods=['POST'])
+@user.route('/logout', methods=['GET'])
 def logout():
-    params = request.get_json()
-    session_id = params['sessionId']
-    if session.get(session_id):
-        session.pop(session_id)
+    if session.get('useremail'):
+        session.pop('useremail', None)
         value = {"status": 200, "result": "success"}
     else:
         value = {"status": 404, "result": "fail"}

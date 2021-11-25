@@ -1,6 +1,5 @@
 import axios from 'axios'
-import React, {useEffect, useContext, useState} from 'react'
-import { Context } from '../reducers';
+import React, {useEffect, useState} from 'react'
 import Review from '../components/Review';
 import Nav from '../components/Nav';
 import styled from 'styled-components';
@@ -9,7 +8,6 @@ import Detail from '../components/Detail';
 
 
 function MyPage() {
-  const [{sessionId}, ] = useContext(Context);
   const [onReview, setOnReview] = useState(false);
   const [focusBook, setFocusBook] = useState([]);
   const [myBooks, setMyBooks] = useState([]);
@@ -38,7 +36,7 @@ function MyPage() {
     setInit(cur=>cur+1)
   }
   useEffect(() => {
-    axios.post('/api/book/myBooks', {sessionId, isRead: true}).then(res=>{
+    axios.post('/api/book/myBooks', {isRead: true}).then(res=>{
       const newStarCheck = {}
       res.data.forEach(book=>{
         console.log(book)

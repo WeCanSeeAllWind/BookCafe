@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 function Nav() {
   const navigate = useNavigate();
-  const [{sessionId, isLogin}, dispatch] = useContext(Context);
+  const [{isLogin}, dispatch] = useContext(Context);
   const handleRental = (e)=>{
     e.preventDefault();
     if (isLogin) {
@@ -37,10 +37,13 @@ function Nav() {
   };
   const handleLogout = (e)=>{
     e.preventDefault();
-    axios.post('/api/user/logout', {sessionId}).then(res=>{
-      dispatch({type: "session", payload: "elice"});
-      dispatch({type: "isLogin", payload: false});
-    })
+    axios('/api/user/logout').then(res=>{
+      if (res.data.result === "success"){
+        dispatch({type: "isLogin", payload: false});
+      } else {
+        alert("이미 로그아웃된 유저입니다.")
+      }
+    }).catch(console.log)
   };
   const handleRegister = (e)=>{
     e.preventDefault();

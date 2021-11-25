@@ -1,6 +1,5 @@
 import axios from 'axios';
-import React, {useEffect, useContext, useState} from 'react';
-import { Context } from '../reducers';
+import React, {useEffect, useState} from 'react';
 import Nav from '../components/Nav';
 import styled from 'styled-components';
 import Book from '../components/Book';
@@ -13,7 +12,6 @@ function Return() {
   const [count, setCount] = useState({})
   const [init, setInit] = useState(0)
   const [starCheck, setStarCheck] = useState({});
-  const [{sessionId}, ] = useContext(Context)
   const [isDetail, setIsDetail] = useState(false);
   const handleAdd = (e)=>{
     e.preventDefault();
@@ -70,7 +68,7 @@ function Return() {
   };  
   const handleReturn = (e)=>{
     e.preventDefault();
-    axios.post('/api/book/return', {sessionId, returnList: Object.values(bucket)}).then(res=>{
+    axios.post('/api/book/return', {returnList: Object.values(bucket)}).then(res=>{
       if (res.data.result === "success") {
         console.log(res.data)
         setBucket({});
@@ -80,7 +78,7 @@ function Return() {
     }).catch(console.log)
   };
   useEffect(() => {
-    axios.post('/api/book/myBooks', {sessionId, isRead: false}).then(res=>{
+    axios.post('/api/book/myBooks', {isRead: false}).then(res=>{
       const newStarCheck = {}
       res.data.forEach(book=>{
         console.log(book)

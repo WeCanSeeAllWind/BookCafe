@@ -14,8 +14,7 @@ def list():
 def rent():
     params = request.get_json()
     rent_list = params['rentList']
-    session_id = params['sessionId']
-    user_email = session[session_id]
+    user_email = session['useremail']
     dbCon.insertRent(rent_list, user_email)
     return jsonify({"status": 200, "result": "success"})
 
@@ -23,8 +22,7 @@ def rent():
 def myBooks():
     params = request.get_json()
     isRead = params['isRead']
-    session_id = params['sessionId']
-    user_email = session[session_id]
+    user_email = session['useremail']
     myBooks = dbCon.selectMyBooks(user_email, isRead)
     return jsonify(myBooks)
 
@@ -32,8 +30,7 @@ def myBooks():
 def returnBooks():
     params = request.get_json()
     return_list = params['returnList']
-    session_id = params['sessionId']
-    user_email = session[session_id]
+    user_email = session['useremail']
     dbCon.insertReturn(return_list, user_email)
     return jsonify({"status": 200, "result": "success"})
 

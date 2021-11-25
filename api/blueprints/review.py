@@ -8,11 +8,10 @@ dbCon = DBController()
 @review.route('/new', methods=['POST'])
 def new():
     params = request.get_json()
-    session_id  = params['sessionId']   
     book_id     = params['bookId']
     star_score  = params['starScore']   
     review_text = params['reviewText']    
-    user_email = session[session_id]
+    user_email = session['useremail']
     if dbCon.insertReview(book_id, star_score, review_text, user_email):
         return jsonify({"status": 200, "result": "success"})
     else:
