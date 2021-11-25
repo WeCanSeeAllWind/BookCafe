@@ -4,7 +4,7 @@ services:
   api:
     build: ./api
     ports: 
-      - "80:5000"
+      - "8080:5000"
     volumes:
       - ./api:/app
     environment:
