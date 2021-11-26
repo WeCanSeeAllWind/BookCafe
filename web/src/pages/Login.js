@@ -1,12 +1,10 @@
-import React, {useContext, useRef} from 'react';
+import React, {useRef} from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import {Context} from '../reducers';
 import Nav from '../components/Nav';
 import styled from 'styled-components';
 
 function Login() {
-  const [, dispatch] = useContext(Context);
   const navigate = useNavigate();
   const email = useRef();
   const password = useRef();
@@ -34,10 +32,10 @@ function Login() {
           <FormWapper>
             <StyledImg src="/images/icons/elice.png" alt="elice"/>
             <StyledLabel htmlFor="email">
-              <StyledInput type="email" ref={email} placeholder="Input your email"/>
+              <StyledInput type="email" ref={email} placeholder="Email"/>
             </StyledLabel>
             <StyledLabel htmlFor="password">
-              <StyledInput type="password" ref={password} placeholder="Input your password"/>
+              <StyledInput type="password" ref={password} placeholder="Password"/>
             </StyledLabel>
             <StyledButton onClick={handleSubmit}>Login</StyledButton>
           </FormWapper>

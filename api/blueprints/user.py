@@ -51,3 +51,14 @@ def logout():
     else:
         value = {"status": 404, "result": "fail"}
     return jsonify(value)
+
+@user.route('/isEmail', methods=['POST'])
+def isEmail():
+    params = request.get_json()
+    email  = params['email'] 
+    result = dbCon.selectUser(email)
+    if result:
+        value = {"status": 404, "result": "fail"}
+    else:
+        value = {"status": 200, "result": "success"}
+    return jsonify(value)
