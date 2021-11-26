@@ -5,6 +5,14 @@ book = Blueprint('book', __name__, url_prefix='/api/book')
 
 dbCon = DBController()
 
+@book.route('/main', methods=['POST'])
+def main():
+    params = request.get_json()
+    page = params['page']
+    length = len(dbCon.selectBooks())
+    books = dbCon.selectMain(page)
+    return jsonify(books, length)
+
 @book.route('/list')
 def list():
     book_list = dbCon.selectBooks()

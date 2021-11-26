@@ -16,6 +16,11 @@ class DBController():
         self.cur.execute("INSERT INTO USERS_TB (user_name, user_email, user_password) VALUES (?, ?, ?);", (name, email, password))
         self.con.commit()
     #Book 처리 --------------
+    def selectMain(self, page):
+        start_id = 8 * page - 7
+        self.cur.execute(f"SELECT * FROM BOOKS_RENTAL_REVIEW_VW WHERE book_id >= {start_id} LIMIT 8;")
+        return self.cur.fetchall()
+
     def selectBooks(self):
         self.cur.execute("SELECT * FROM BOOKS_RENTAL_REVIEW_VW;")
         return self.cur.fetchall()

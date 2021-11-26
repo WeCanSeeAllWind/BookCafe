@@ -1,21 +1,21 @@
 import React from 'react'
 import styled from 'styled-components'
 
-function Book({book, starCheck, handleImg, isRent, handleAdd, count, handlePlus, handleMinus, isWish, isRented, isReturn, isReview, handleReview}) {
+function Book({book, starCheck, handleImg, isRent, handleAdd, count, handlePlus, handleMinus, isWish, isRented, isReturn, isReview, handleReview, isSlider, className}) {
   return (
-    <StyledDiv key={book[1]}>
+    <StyledDiv key={book[1]} className={className}>
       <Wrapper>
         <ImgWrapper><StyledImg src={'/images/books/'+book[0]+'.jpg'} alt={book[0]} onClick={handleImg}/></ImgWrapper>
         <ContentWrapper>
-          <TitleWrapper>{book[1]}</TitleWrapper>
-          <DetailWrapper>저자: {book[2]}</DetailWrapper>
-          <StarWrapper>
+          {isSlider || <TitleWrapper>{book[1]}</TitleWrapper>}
+          {isSlider || <DetailWrapper>저자: {book[2]}</DetailWrapper>}
+          {isSlider || <StarWrapper>
             {starCheck[book[0]][0] ? <StyledStar src={'/images/icons/star_fill.png'} alt="star_fill"/> : <StyledStar src={'/images/icons/star_empty.png'} alt="star_empty"/>}
             {starCheck[book[0]][1] ? <StyledStar src={'/images/icons/star_fill.png'} alt="star_fill"/> : <StyledStar src={'/images/icons/star_empty.png'} alt="star_empty"/>}
             {starCheck[book[0]][2] ? <StyledStar src={'/images/icons/star_fill.png'} alt="star_fill"/> : <StyledStar src={'/images/icons/star_empty.png'} alt="star_empty"/>}
             {starCheck[book[0]][3] ? <StyledStar src={'/images/icons/star_fill.png'} alt="star_fill"/> : <StyledStar src={'/images/icons/star_empty.png'} alt="star_empty"/>}
             {starCheck[book[0]][4] ? <StyledStar src={'/images/icons/star_fill.png'} alt="star_fill"/> : <StyledStar src={'/images/icons/star_empty.png'} alt="star_empty"/>}
-          </StarWrapper>
+          </StarWrapper>}
           {isRent && <DetailWrapper>대여가능 권수: {book[5] || 5}</DetailWrapper>}
           {isRent && <StyledButton value={book} onClick={handleAdd}>대여</StyledButton>}
 
@@ -51,11 +51,11 @@ const StyledDiv = styled.div`
 `;
 
 const Wrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  margin: auto;
-  display: grid;
-  grid-template-columns: 2fr 3fr;
+width: 100%;
+height: 100%;
+margin: auto;
+display: grid;
+grid-template-columns: 2fr 3fr;
 `;
 
 const ImgWrapper = styled.div`
@@ -88,6 +88,7 @@ const StarWrapper = styled.div`
 
 const StyledImg = styled.img`
   max-width: 100%;
+  max-height: 100%;
 `;
 const StyledStar = styled.img`
   width: 10%;
@@ -102,5 +103,17 @@ const StyledButton = styled.button`
   font-weight: bold;
 `;
 
+const SliderContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  .title {
+    margin-top: 30px;
+    font-size: 35px;
+  }
+`;
 
-
+const SlierWrapper = styled.h3`
+  color: black;
+  font-size: 25px;
+  font-weight: bold;
+`;

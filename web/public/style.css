@@ -2,7 +2,12 @@ html, body, button, div, h2, h1, p {
   margin: 0;
   padding: 0;
   font-family: "Elice Digital Baeum",sans-serif;
-  background-color: none
+  background-color: none;
+  
+}
+
+html, body, #root {
+  height: 100%;
 }
 
 button, input {
