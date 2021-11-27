@@ -62,3 +62,9 @@ def isEmail():
     else:
         value = {"status": 200, "result": "success"}
     return jsonify(value)
+
+@user.route('/whoami')
+def whoami():
+    email = session['useremail']
+    name = dbCon.selectUser(email)[1]
+    return jsonify(email, name)

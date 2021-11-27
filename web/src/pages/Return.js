@@ -112,7 +112,7 @@ return (
         </BookList>
       </StyledTwins>
       <StyledTwins>
-        <h2>대 여 희 망</h2>
+        <h2>반 납 희 망</h2>
         <StyledHr/>
         <WishList>
           {Object.values(bucket).map(book=>(

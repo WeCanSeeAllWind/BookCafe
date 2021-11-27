@@ -8,7 +8,7 @@ class DBController():
         self.cur = self.con.cursor()
     #User 처리 --------------
     def selectUser(self, email):
-        self.cur.execute(f"SELECT user_password FROM USERS_TB WHERE user_email = '{email}';")
+        self.cur.execute(f"SELECT user_password, user_name FROM USERS_TB WHERE user_email = '{email}';")
         return self.cur.fetchone()
 
     def insertUser(self, userInfo):

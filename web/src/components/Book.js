@@ -11,10 +11,11 @@ function Book({book, starCheck, handleImg, isRent, handleAdd, count, handlePlus,
           {isSlider || <TitleWrapper>{book[1]}</TitleWrapper>}
           {isSlider || <DetailWrapper>저자: {book[2]}</DetailWrapper>}
           {isSlider || <Stars starCheck={starCheck} bookId={book[0]}/>}
-          {isRent && <DetailWrapper>대여가능 권수: {book[5] || 5}</DetailWrapper>}
+
+          {isRent && <DetailWrapper>대여가능 권수: {book[5] === 0 ? 0 : book[5] || 5}</DetailWrapper>}
           {isRent && <StyledButton value={book} onClick={handleAdd}>대여</StyledButton>}
 
-          {isWish && <DetailWrapper>대여가능 권수: {book[4] || 5}</DetailWrapper>}
+          {isWish && <DetailWrapper>대여가능 권수: {book[4] === 0 ? 0 : book[4] || 5}</DetailWrapper>}
           {isWish && <DetailWrapper>대여희망 권수: {count[book[0]]}</DetailWrapper>}
           {isWish && <StyledButton name={book[0]} value={book[4]} onClick={handleMinus}>-</StyledButton>}
           {isWish && <StyledButton name={book[0]} value={book[4]} onClick={handlePlus}>+</StyledButton>}
@@ -75,6 +76,8 @@ const TitleWrapper = styled.h3`
 const DetailWrapper = styled.p`
   font-size: 0.8em;
   font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 10px;
 `;
 
 const StyledImg = styled.img`
@@ -90,6 +93,7 @@ const StyledButton = styled.button`
   color: #d1d1ef;
   font-size: 13px;
   font-weight: bold;
+  margin-top: 10px;
 `;
 
 const SliderContainer = styled.div`

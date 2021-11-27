@@ -15,8 +15,16 @@ function Rent() {
   const handleAdd = (e)=>{
     e.preventDefault();
     const [id, name, author, countTotal, countRent, countCurrent, review_avg] = e.target.value.split(',')
+    let possibleCount
+    if (countCurrent === 0) {
+      possibleCount = 0
+    } else {
+      possibleCount = countCurrent  || 5;
+    }
+    if (possibleCount < 1) return alert("대여가능한 책이 없습니다.")
+    console.log(possibleCount)
     setBucket(cur=>{
-      const newBucket = {...cur, [id]: [id, name, author, 1, countCurrent]};
+      const newBucket = {...cur, [id]: [id, name, author, 1, possibleCount]};
       return newBucket
     })
     console.log(bucket);
