@@ -37,13 +37,14 @@ function Main() {
           dispatch({type:"isLogin", payload: false})
         }
       }).catch(console.log)
+      setCurrentSlide(0);
       setInterval(() => {
         setCurrentSlide(cur=>{
           if (cur > 6) {return 0} else {
             return cur + 1
           }
         })
-      }, 3000);
+      }, 4000);
     });
   }, [page]);
 

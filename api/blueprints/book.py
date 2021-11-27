@@ -46,5 +46,7 @@ def returnBooks():
 def detail():
     params = request.get_json()
     book_id = params['bookId']
-    bookDetail = dbCon.selectBookDetail(book_id)
-    return jsonify(bookDetail)
+    book_detail = dbCon.selectBookDetail(book_id)
+    book_star = dbCon.selectBookStar(book_id)[0]
+    book_reviews = dbCon.selectReview(book_id)
+    return jsonify(book_detail, book_star, book_reviews)

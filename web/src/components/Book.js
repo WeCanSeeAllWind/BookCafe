@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import Stars from './Stars'
 
 function Book({book, starCheck, handleImg, isRent, handleAdd, count, handlePlus, handleMinus, isWish, isRented, isReturn, isReview, handleReview, isSlider, className}) {
   return (
@@ -9,13 +10,7 @@ function Book({book, starCheck, handleImg, isRent, handleAdd, count, handlePlus,
         <ContentWrapper>
           {isSlider || <TitleWrapper>{book[1]}</TitleWrapper>}
           {isSlider || <DetailWrapper>저자: {book[2]}</DetailWrapper>}
-          {isSlider || <StarWrapper>
-            {starCheck[book[0]][0] ? <StyledStar src={'/images/icons/star_fill.png'} alt="star_fill"/> : <StyledStar src={'/images/icons/star_empty.png'} alt="star_empty"/>}
-            {starCheck[book[0]][1] ? <StyledStar src={'/images/icons/star_fill.png'} alt="star_fill"/> : <StyledStar src={'/images/icons/star_empty.png'} alt="star_empty"/>}
-            {starCheck[book[0]][2] ? <StyledStar src={'/images/icons/star_fill.png'} alt="star_fill"/> : <StyledStar src={'/images/icons/star_empty.png'} alt="star_empty"/>}
-            {starCheck[book[0]][3] ? <StyledStar src={'/images/icons/star_fill.png'} alt="star_fill"/> : <StyledStar src={'/images/icons/star_empty.png'} alt="star_empty"/>}
-            {starCheck[book[0]][4] ? <StyledStar src={'/images/icons/star_fill.png'} alt="star_fill"/> : <StyledStar src={'/images/icons/star_empty.png'} alt="star_empty"/>}
-          </StarWrapper>}
+          {isSlider || <Stars starCheck={starCheck} bookId={book[0]}/>}
           {isRent && <DetailWrapper>대여가능 권수: {book[5] || 5}</DetailWrapper>}
           {isRent && <StyledButton value={book} onClick={handleAdd}>대여</StyledButton>}
 
@@ -82,17 +77,11 @@ const DetailWrapper = styled.p`
   font-weight: bold;
 `;
 
-const StarWrapper = styled.div`
-  width: 100%;
-`;
-
 const StyledImg = styled.img`
   max-width: 100%;
   max-height: 100%;
 `;
-const StyledStar = styled.img`
-  width: 10%;
-`;
+
 const StyledButton = styled.button`
   /* width: 20%; */
   padding: 5px 10px;

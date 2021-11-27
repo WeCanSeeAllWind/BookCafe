@@ -24,6 +24,10 @@ class DBController():
     def selectBooks(self):
         self.cur.execute("SELECT * FROM BOOKS_RENTAL_REVIEW_VW;")
         return self.cur.fetchall()
+
+    def selectBookStar(self, book_id):
+        self.cur.execute(f"SELECT review_avg_score FROM BOOKS_RENTAL_REVIEW_VW WHERE book_id = '{book_id}'")
+        return self.cur.fetchone()
     
     def selectBookDetail(self, book_id):
         self.cur.execute(f"SELECT * FROM BOOKS_TB WHERE book_id = '{book_id}';")
@@ -62,3 +66,6 @@ class DBController():
             self.cur.execute(f"INSERT INTO REVIEW_TB (review_book_id, review_user_email, review_score, review_content) VALUES ('{book_id}', '{user_email}', '{star_score}', '{review_text}');")
             self.con.commit()
             return True
+    def selectReview(self, book_id):
+        self.cur.execute(f"SELECT U.user_name, R.review_content, R.review_score FROM REVIEW_TB AS R LEFT JOIN USERS_TB AS U ON R.review_user_email = U.user_email WHERE review_book_id = '{book_id}' LIMIT 10;")
+        return self.cur.fetchall()
